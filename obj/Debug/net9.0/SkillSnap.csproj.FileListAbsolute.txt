@@ -1,0 +1,6 @@
+C:\Projects\FullStack\SkillSnap\obj\Debug\net9.0\SkillSnap.csproj.AssemblyReference.cache
+C:\Projects\FullStack\SkillSnap\obj\Debug\net9.0\SkillSnap.GeneratedMSBuildEditorConfig.editorconfig
+C:\Projects\FullStack\SkillSnap\obj\Debug\net9.0\SkillSnap.AssemblyInfoInputs.cache
+C:\Projects\FullStack\SkillSnap\obj\Debug\net9.0\SkillSnap.AssemblyInfo.cs
+C:\Projects\FullStack\SkillSnap\obj\Debug\net9.0\SkillSnap.csproj.CoreCompileInputs.cache
+C:\Projects\FullStack\SkillSnap\obj\Debug\net9.0\SkillSnap.MvcApplicationPartsAssemblyInfo.cache

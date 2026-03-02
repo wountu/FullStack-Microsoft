@@ -1,0 +1,44 @@
+@page "/login"
+
+@using SkillSnap.Client.Services
+ @inject AuthService AuthService
+@inject NavigationManager NavigationManager 
+
+
+<h3>Login</h3>
+
+ <EditForm Model="loginModel" OnValidSubmit="HandleLogin">
+    <InputText @bind-Value="loginModel.Email" placeholder="Email" />
+    <InputText @bind-Value="loginModel.Password" placeholder="Password" type="password" />
+    <button type="submit">Login</button>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <p class="error">@errorMessage</p>
+}
+ 
+
+@code {
+    private LoginModel loginModel = new LoginModel();      
+    private string? errorMessage;
+
+    private async Task HandleLogin()    
+    {
+        var succes = await AuthService.Login(loginModel.Email, loginModel.Password);
+        if (succes)
+        {
+            NavigationManager.NavigateTo("/myprofiles");
+        }
+        else
+        {
+            errorMessage = "Invalid Credentials";
+        }
+    }
+
+    public class LoginModel
+    {
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
+} 

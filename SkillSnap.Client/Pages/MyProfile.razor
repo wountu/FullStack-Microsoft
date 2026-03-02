@@ -1,0 +1,104 @@
+@page "/profile/{profileId:int}"
+@using System.Security.Claims
+@using SkillSnap.Client.Services
+@using SkillSnap.Shared.Models
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Threading.Tasks
+@inject HttpClient Http
+@inject ApiAuthenticationStateProvider AuthStateProvider
+@inject NavigationManager Navigation
+
+<PageTitle>My Profile</PageTitle>
+
+<AuthorizeView>
+    <Authorized>
+
+        @if (profile == null)
+        {
+            <p>Loading profile...</p>
+        }
+        else
+        {
+            <div class="container mt-4">
+
+
+                <div class="d-flex align-items-center mt-3">
+                <button class="btn btn-secondary mt-3 mb-3" @onclick="GoBackToProfilesList">
+                    ← Back to Profiles
+                </button>
+
+
+                    <button class="btn btn-danger ms-auto"
+                            @onclick="DeleteProfile">
+                        Delete Profile
+                    </button>
+                </div>
+
+                <div class="card shadow mt-3" >
+
+                    <div class="card-header bg-dark text-white">
+                        <h2>@profile.ProfileName</h2>
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="mb-3">
+                            <strong>Level:</strong> @profile.Level
+                        </div>
+
+                        <div class="mb-3">
+                            <strong>Level Badge:</strong><br />
+                            <img src="@profile.LevelBadge"
+                                 alt="Level Badge"
+                                 style="max-height:80px;" />
+                        </div>
+
+                        <div class="mb-3">
+                            <strong>Prestige Level:</strong> @profile.PrestigeLevel
+                        </div>
+
+                        <div class="mb-3">
+                            <strong>Prestige Badge:</strong><br />
+                            <img src="@profile.PrestigeBadge"
+                                 alt="Prestige Badge"
+                                 style="max-height:80px;" />
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        }
+
+    </Authorized>
+
+    <NotAuthorized>
+        <p>You must be logged in to view your profile.</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    [Parameter]
+    public int ProfileId{ get; set; }
+
+    private Profile? profile;
+
+    protected override async Task OnInitializedAsync()
+    {
+        profile = await Http.GetFromJsonAsync<Profile>($"api/profiles/{ProfileId}");
+    }
+
+    private void GoBackToProfilesList()
+    {
+        Navigation.NavigateTo("/myprofiles");
+    }
+
+    private async Task DeleteProfile()
+    {
+        var response = await Http.DeleteAsync($"api/profiles/{ProfileId}");
+
+        if(response.IsSuccessStatusCode)
+        {
+            Navigation.NavigateTo("/myprofiles");
+        }
+    }
+}

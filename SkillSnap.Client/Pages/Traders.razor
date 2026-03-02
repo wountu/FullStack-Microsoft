@@ -1,0 +1,39 @@
+@page "/"
+@using SkillSnap.Client.Models
+@inject TraderService TraderService
+
+<h3>Tarkov Traders</h3>
+
+@if (traders == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="row">
+        @foreach (var trader in traders)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <img src="@trader.ImageLink" 
+                         class="card-img-top" 
+                         loading="lazy"
+                         style="width:200px; height:auto; object-fit:cover;"/>
+                    <div class="card-body">
+                        <h5 class="card-title">@trader.Name</h5>
+                        <p class="card-text">@trader.Description</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private List<Trader>? traders;
+
+    protected override async Task OnInitializedAsync()
+    {
+        traders = await TraderService.GetTradersAsync();
+    }
+}

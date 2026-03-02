@@ -1,0 +1,12 @@
+<div class="profile-card">
+    <img src="@ProfilePictureUrl" alt="Profile Picture" class="profile-pic" />
+    <h3>@Name</h3>
+    <p>@Bio</p>
+</div>
+
+@code {
+    // Placeholder properties
+    [Parameter] public string Name { get; set; } = "John Doe";
+    [Parameter] public string Bio { get; set; } = "This is a short bio.";
+    [Parameter] public string ProfilePictureUrl { get; set; } = "https://via.placeholder.com/150";
+}

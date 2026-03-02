@@ -1,0 +1,87 @@
+@page "/create-profile"
+@using SkillSnap.Shared.Models
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
+<PageTitle>Create Profile</PageTitle>
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-success text-white">
+            <h3>Create New Profile</h3>
+        </div>
+
+        <div class="card-body">
+            <EditForm Model="newProfile" OnValidSubmit="HandleCreate">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="mb-3">
+                    <label class="form-label">Profile Name</label>
+                    <InputText class="form-control" @bind-Value="newProfile.ProfileName" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Level</label>
+                    <InputNumber class="form-control" @bind-Value="newProfile.Level" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Prestige Level</label>
+                    <InputNumber class="form-control" @bind-Value="newProfile.PrestigeLevel" />
+                </div>
+
+                <button type="submit" class="btn btn-success">Create Profile</button>
+                <button type="button" class="btn btn-secondary ms-2" @onclick="GoBack">Cancel</button>
+            </EditForm>
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger mt-3">@errorMessage</div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private Profile newProfile = new Profile();
+    private string? errorMessage;
+
+    private async Task HandleCreate()
+    {
+        try
+        {
+            var token = await LocalStorage.GetItemAsync<string>("authToken");
+            if (!string.IsNullOrEmpty(token))
+            {
+                Http.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            }
+            else
+            {
+                errorMessage = "You must be logged in to create a profile.";
+                return;
+            }
+
+            var response = await Http.PostAsJsonAsync("api/profiles", newProfile);
+            if (response.IsSuccessStatusCode)
+            {
+                Navigation.NavigateTo("/myprofiles");
+            }
+            else
+            {
+                errorMessage = "Failed to create profile. Please try again.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error: {ex.Message}";
+        }
+    }
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo("/myprofiles");
+    }
+}
